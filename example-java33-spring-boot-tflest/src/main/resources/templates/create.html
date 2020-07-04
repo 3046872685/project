@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>采购入库</h1>
+<div id="ctx">
+	<table>
+		<tr>
+			<td>客户编号<input v-model="user.id" type="text" ></td>
+			<td>客户名称<input v-model="user.name" type="text"></td>
+		</tr>
+		<tr>
+			<td>联系人<input v-model="user.lianxiren" type="text"></td>
+			<td>创建日期<input v-model="user.time" type="text" ></td>
+		</tr>
+		<tr>
+			<td>联系电话<input v-model="user.lxdh" type="text"></td>
+			<td>送货地址<input v-model="dztable.dzid" type="text"><input v-model="dztable.dz" type="text" ></td>
+		</tr>
+		<tr>
+			<td>负责人<input v-model="user.fzr" type="text" ></td>
+			<td>税务登记号<input v-model="user.swdjh" type="text"></td>
+		</tr>
+		<tr>
+			<td>
+			<button @click="findByid(user.id)">查询</button>&nbsp
+			<button @click="userInsers(),inupdz()">保存</button>
+			<button @click="updateUser()">修改</button>
+			</td>
+		</tr>
+	</table>
+	
+</div>
+<script type="text/javascript" th:src="@{/js/jquery-1.12.4.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/vue.js}"></script>
+<script type="text/javascript">
+	var vm = new Vue({
+		el:"#ctx",
+		data(){
+			return {
+				user:{},
+				dztable:{}
+			}
+		},
+		methods:{
+			updateUser(){
+				alert("修改");
+				var that = this;
+				var user = JSON.stringify(this.user);
+				that.user.dz=that.dztable;
+				console.log(user.dz);
+				$.ajax({
+					url:"[[@{/TbbillController/updateUser}]]",
+					data:user,
+					method:"post",
+					dataType:"text",
+					contentType:"application/json;charset=utf-8",
+					success:function(result){
+						console.log(result);
+						if(result>0){
+							alert("修改成功");
+						}
+					}
+				});
+			},
+			findByid(id){
+				alert(0);
+				var that = this;
+				$.ajax({
+					url:"[[@{/TbbillController/findByid}]]",
+					data:{
+						id:id
+					},
+					method:"get",
+					success:function(result){
+						that.user=result;
+						dztable=that.user.dz;
+						console.log(dztable);
+					}
+				});
+			},
+			userInsers(){
+				alert("保存");
+				var that = this;
+				that.user.dz=that.dztable;
+				var user = JSON.stringify(this.user);
+				console.log(user);
+				$.ajax({
+					url:"[[@{/TbbillController/userInsers}]]",
+					data:user,
+					method:"post",
+					dataType:"text",
+					contentType:"application/json;charset=utf-8",
+					success:function(result){
+						console.log(result);
+						if(result>0){
+							alert("保存成功");
+						}else{
+							alert("保存失败");
+						}
+					}
+				});
+			},
+			inupdz(){
+				var that = this;
+				var user = JSON.stringify(this.user);
+				that.user.dz=that.dztable;
+				console.log(that.user.dz);
+				console.log(that.dztable);
+				$.ajax({
+					url:"[[@{/TbbillController/inupdz}]]",
+					data:user,
+					method:"post",
+					dataType:"text",
+					contentType:"application/json;charset=utf-8",
+					success:function(result){
+						console.log(result);
+						if(result>0){
+							alert("新增修改地址成功");
+						}
+					}
+				});
+			},
+			findByDz(){
+				var that = this;
+				$.ajax({
+					url:"[[@{/TbbillController/findByDz}]]",
+					method:"get",
+					success:function(result){
+						console.log(result);
+						that.dztable=result;
+						that.user.dz=result;
+						console.log(that.user);
+						alert(that.user.dz.dzid);
+					}
+				});
+			}
+		},
+		created(){
+			this.findByDz();
+		}
+	});
+</script>
+</body>
+</html>
