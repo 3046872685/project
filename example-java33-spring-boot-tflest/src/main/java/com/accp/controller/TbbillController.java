@@ -14,6 +14,7 @@ import com.accp.service.TbbillService;
 @Controller
 @RequestMapping("/TbbillController")
 public class TbbillController {
+	
 	@Autowired
 	TbbillService service=null;
 	//id查询用户信息
